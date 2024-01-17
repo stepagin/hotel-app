@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Отель Волхов</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+
+<div id="app">
+  <nav>
+    <ul>
+      <li><a @click="changePage('home')">Главная</a></li>
+      <li><a @click="changePage('rooms')">Номера отеля</a></li>
+      <li><a @click="changePage('contacts')">Контакты</a></li>
+      <li><a @click="changePage('login')">Войти</a></li>
+    </ul>
+  </nav>
+
+  <div v-if="currentPage === 'home'">
+    <h1>Добро пожаловать в отель Волхов</h1>
+    <form @submit.prevent="searchRooms">
+      <label for="adults">Взрослые:</label>
+      <input
+        type="number"
+        id="adults"
+        v-model="searchParams.adult_guests"
+        required
+      />
+
+      <label for="dates">Период проживания:</label>
+      <input
+        type="text"
+        id="dates"
+        v-model="searchParams.occupied"
+        placeholder="yyyy-mm-dd;yyyy-mm-dd"
+        required
+      />
+
+      <button type="submit">Найти</button>
+    </form>
+    <div v-if="searchResults.length > 0">
+      <h2>Результаты поиска:</h2>
+      <ul>
+        <li v-for="room in searchResults" :key="room.id">
+          {{ room.data.title }} - {{ room.data.price }}
+          <button @click="openRoomDetails(room.id)">Бронировать</button>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div v-else-if="currentPage === 'rooms'">
+    <h1>Номера отеля</h1>
+    <ul>
+      <li v-for="room in hotelRooms" :key="room.id">
+        {{ room.data.title }} - {{ room.data.price }}
+        <button @click="openRoomDetails(room.id)">Бронировать</button>
+      </li>
+    </ul>
+  </div>
+
+  <div v-else-if="currentPage === 'contacts'">
+    <h1>Контакты</h1>
+    <p><strong>Администратор:</strong> 8 (800) 555-35-35 (Ирина)</p>
+    <p><strong>Рецепция:</strong> 8 (800) 555-35-35 (Ирина)</p>
+    <p><strong>Горячая линия:</strong> работает ежедневно с 12:00 до 13:00. Перерыв на обед с 12:00 до 13:00.</p>
+    <p><strong>Связь с администратором для жильцов:</strong> <a href="https://t.me/volhov_official_hotel_group">@volhov_official_hotel_group</a></p>
+  </div>
+
+  <div v-else-if="currentPage === 'login'">
+    <h1>Войти</h1>
+    <form @submit.prevent="login">
+      <label for="login">Логин:</label>
+      <input type="text" id="login" v-model="loginData.login" required>
+
+      <label for="password">Пароль:</label>
+      <input type="password" id="password" v-model="loginData.password" required>
+
+      <button type="submit">Вход</button>
+    </form>
+
+    <div>
+      <button @click="changePage('register')">Регистрация</button>
+      <button @click="changePage('forgot')">Восстановление аккаунта</button>
+    </div>
+  </div>
+
+  <div v-else-if="currentPage === 'register'">
+    <h1>Регистрация</h1>
+    <form @submit.prevent="register">
+      <label for="registerLogin">Логин:</label>
+      <input type="text" id="registerLogin" v-model="registerData.login" required>
+
+      <label for="registerPassword">Пароль:</label>
+      <input type="password" id="registerPassword" v-model="registerData.password" required>
+
+      <button type="submit">Зарегистрироваться</button>
+    </form>
+    <div>
+      <button @click="changePage('login')">Войти</button>
+    </div>
+  </div>
+
+  <div v-else-if="currentPage === 'forgot'">
+    <h1>Восстановление аккаунта</h1>
+    <form @submit.prevent="recoverAccount">
+      <label for="email">Электронная почта:</label>
+      <input type="email" id="email" v-model="recoverData.email" required>
+
+      <button type="submit">Восстановить</button>
+    </form>
+    <div>
+      <button @click="changePage('login')">Войти</button>
+    </div>
+  </div>
+
+  <div v-else-if="currentPage === 'profile'">
+    <h1>Профиль пользователя</h1>
+    <button @click="editProfile">Изменить профиль</button>
+    <div>
+      <h2>Данные о профиле</h2>
+      <p>{{ userProfile }}</p>
+    </div>
+  </div>
+
+  <div v-else-if="currentPage === 'chats'">
+    <h1>Список чатов</h1>
+    <ul>
+      <li v-for="chat in userChats" :key="chat.id">
+        <a @click="openChat(chat.id)">{{ chat.room_name }}</a>
+      </li>
+    </ul>
+  </div>
+
+  <div v-else-if="currentPage === 'chatDetails'">
+    <h1>Детали чата</h1>
+    <ul>
+      <li v-for="message in chatMessages" :key="message.id">
+        {{ message.from.username }}: {{ message.text }}
+      </li>
+    </ul>
+    <form @submit.prevent="sendMessage">
+      <label for="newMessage">Новое сообщение:</label>
+      <input type="text" id="newMessage" v-model="newMessageText" required>
+      <button type="submit">Отправить</button>
+    </form>
+  </div>
+
+  <div v-else-if="currentPage === 'reservations'">
+    <h1>Список бронирований</h1>
+    <ul>
+      <li v-for="reservation in userReservations" :key="reservation.id">
+        {{ reservation.data.title }} - {{ reservation.data['check-in'] }} - {{ reservation.data['departure'] }}
+      </li>
+    </ul>
+  </div>
+
+  <div v-else-if="currentPage === 'services'">
+    <h1>Заказ услуг</h1>
+    <label for="orderType">Тип услуги:</label>
+    <select id="orderType" v-model="orderType">
+      <option value="cleaning">Клининг</option>
+      <option value="food">Питание</option>
+    </select>
+    <label for="reservationId">ID бронирования:</label>
+    <input type="text" id="reservationId" v-model="reservationId" required>
+    <label for="serviceDate">Дата услуги:</label>
+    <input type="date" id="serviceDate" v-model="serviceDate" required>
+    <button @click="orderService">Заказать</button>
+  </div>
+
+  <div v-else-if="currentPage === 'cleaning'">
+    <h1>Комнаты для уборки</h1>
+    <label for="cleaningDate">Дата уборки:</label>
+    <input type="date" id="cleaningDate" v-model="cleaningDate" required>
+    <button @click="getRoomsForCleaning">Показать</button>
+    <ul>
+      <li v-for="room in cleaningRooms" :key="room.id">
+        {{ room.reservation.title }} - {{ room.reservation['check-in'] }} - {{ room.reservation['departure'] }}
+        <button @click="markRoomCleaned(room.reservation.id, cleaningDate)">Пометить убранной</button>
+      </li>
+    </ul>
+  </div>
+
+  <div v-else-if="currentPage === 'adminMessages'">
+    <h1>Переписка по активным бронированиям</h1>
+    <ul>
+      <li v-for="message in adminMessages" :key="message.id">
+        <strong>{{ message.username }}</strong> - {{ message.reservation.title }} - {{ message.status }} - {{ message.type }}
+      </li>
+    </ul>
+  </div>
+
+  <div v-else-if="currentPage === 'adminChatDetails'">
+    <h1>Переписка по бронированию</h1>
+    <ul>
+      <li v-for="message in adminChatMessages" :key="message.id">
+        {{ message.from.username }}: {{ message.text }}
+      </li>
+    </ul>
+  </div>
+
+  <div v-else-if="currentPage === 'editRoom'">
+    <h1>Редактирование номера</h1>
+    <label for="editedRoomTitle">Название:</label>
+    <input type="text" id="editedRoomTitle" v-model="editedRoom.title" required>
+    <label for="editedRoomDescription">Описание:</label>
+    <textarea id="editedRoomDescription" v-model="editedRoom.description" required></textarea>
+    <button @click="saveEditedRoom">Сохранить</button>
+  </div>
+
+  <div v-else-if="currentPage === 'adminOrderCleaning'">
+    <h1>Заказ клининга</h1>
+    <label for="cleaningReservationId">ID бронирования:</label>
+    <input type="text" id="cleaningReservationId" v-model="cleaningReservationId" required>
+    <label for="cleaningDate">Дата клининга:</label>
+    <input type="date" id="cleaningDate" v-model="cleaningDate" required>
+    <button @click="orderCleaning">Заказать клининг</button>
+  </div>
+</div>
+
+<script>
+new Vue({
+  el: '#app',
+  data: {
+    currentPage: 'home',
+    searchParams: {
+      adult_guests: 1,
+      occupied: ''
+    },
+    loginData: {
+      login: '',
+      password: ''
+    },
+    registerData: {
+      login: '',
+      password: ''
+    },
+    recoverData: {
+      email: ''
+    },
+    searchResults: [],
+    hotelRooms: [], // Добавлен массив для хранения списка номеров отеля
+    userProfile: {},
+    userChats: [],
+    chatMessages: [],
+    newMessageText: '',
+    currentChatId: null,
+    userReservations: [],
+    orderType: 'cleaning',
+    reservationId: '',
+    serviceDate: '',
+    cleaningDate: '',
+    cleaningRooms: [],
+    adminMessages: [],
+    adminChatMessages: [],
+    editedRoom: { id: 0, title: '', description: '' },
+    cleaningReservationId: '',
+  },
+  methods: {
+    changePage(page) {
+      this.currentPage = page;
+      if (page === 'rooms') {
+        this.fetchHotelRooms();
+      }
+    },
+    login() {
+      axios.post('https://volkhov-hotel.ru/auth/login', this.loginData)
+        .then(response => {
+          console.log('Авторизация:', response.data);
+        })
+        .catch(error => {
+          console.error('Ошибка при авторизации:', error);
+        });
+    },
+    register() {
+      axios.post('https://volkhov-hotel.ru/auth/register', this.registerData)
+        .then(response => {
+          console.log('Регистрация:', response.data);
+        })
+        .catch(error => {
+          console.error('Ошибка при регистрации:', error);
+        });
+    },
+    recoverAccount() {
+      axios.post('https://volkhov-hotel.ru/auth/recover', this.recoverData)
+        .then(response => {
+          console.log('Восстановление аккаунта:', response.data);
+        })
+        .catch(error => {
+          console.error('Ошибка при восстановлении аккаунта:', error);
+        });
+    },
+    searchRooms() {
+      axios.get('https://volkhov-hotel.ru/searchapp/search', { params: this.searchParams })
+        .then(response => {
+          this.searchResults = response.data;
+        })
+        .catch(error => {
+          console.error('Ошибка при поиске номеров:', error);
+        });
+    },
+    fetchHotelRooms() {
+      axios.get('https://volkhov-hotel.ru/rooms')
+        .then(response => {
+          this.hotelRooms = response.data;
+        })
+        .catch(error => {
+          console.error('Ошибка при получении списка номеров отеля:', error);
+        });
+    },
+    openRoomDetails(id) {
+      axios.get(`https://volkhov-hotel.ru/searchapp/detail/${id}`, { params: this.searchParams })
+        .then(response => {
+          console.log('Открываем страницу с деталями номера:', response.data);
+        })
+        .catch(error => {
+          console.error('Ошибка при открытии страницы с деталями номера:', error);
+        });
+    },
+    fetchUserProfile() {
+      const profileId = getUserId(); // Замените эту функцию на получение ID текущего пользователя
+      axios.get(`https://volkhov-hotel.ru/cabinet/profile/${profileId}`)
+        .then(response => {
+          this.userProfile = response.data.user;
+        })
+        .catch(error => {
+          console.error('Ошибка при получении данных профиля:', error);
+        });
+    },
+    editProfile() {
+      const profileId = getUserId(); // Замените эту функцию на получение ID текущего пользователя
+      const updatedFields = { field: 'new_value' }; // Замените на реальные обновленные данные
+      axios.post('https://volkhov-hotel.ru/cabinet/profile/edit', { id: profileId, data: updatedFields })
+        .then(response => {
+          console.log('Изменение профиля:', response.data);
+        })
+        .catch(error => {
+          console.error('Ошибка при изменении профиля:', error);
+        });
+    },
+    fetchUserChats() {
+      axios.post('https://volkhov-hotel.ru/cabinet/notices', { filter: 'unread' })
+        .then(response => {
+          this.userChats = response.data;
+        })
+        .catch(error => {
+          console.error('Ошибка при получении списка чатов:', error);
+        });
+    },
+    openChat(chatId) {
+      this.currentChatId = chatId;
+      axios.get(`https://volkhov-hotel.ru/cabinet/notices/${chatId}`)
+        .then(response => {
+          this.chatMessages = response.data;
+        })
+        .catch(error => {
+          console.error('Ошибка при открытии чата:', error);
+        });
+    },
+    sendMessage() {
+      const senderId = getUserId(); // Замените эту функцию на получение ID текущего пользователя
+      const noticeId = this.currentChatId;
+      axios.post(`https://volkhov-hotel.ru/cabinet/notices/${noticeId}/send`, {
+        text: this.newMessageText,
+        receiver_id: 123, // Замените на ID получателя сообщения
+        sender_id: senderId,
+        notice_id: noticeId
+      })
+        .then(response => {
+          console.log('Отправка сообщения:', response.data);
+          this.newMessageText = ''; // Очистка поля ввода после отправки
+          this.openChat(noticeId); // Обновление сообщений в чате
+        })
+        .catch(error => {
+          console.error('Ошибка при отправке сообщения:', error);
+        });
+    },
+    fetchUserReservations() {
+      axios.get('https://volkhov-hotel.ru/cabinet/reservations')
+        .then(response => {
+          this.userReservations = response.data;
+        })
+        .catch(error => {
+          console.error('Ошибка при получении списка бронирований:', error);
+        });
+    },
+    orderService() {
+      axios.post(`https://volkhov-hotel.ru/cabinet/reservations/services/order`, {
+        order_type: this.orderType,
+        reservation_id: this.reservationId,
+        date: this.serviceDate
+      })
+        .then(response => {
+          console.log('Заказ услуги:', response.data);
+          window.location.href = `https://volkhov-hotel.ru/pay/${response.data.payment_id}`;
+        })
+        .catch(error => {
+          console.error('Ошибка при заказе услуги:', error);
+        });
+    },
+    getRoomsForCleaning() {
+      axios.get(`https://volkhov-hotel.ru/cleaning?date=${this.cleaningDate}`)
+        .then(response => {
+          this.cleaningRooms = response.data;
+        })
+        .catch(error => {
+          console.error('Ошибка при получении комнат для уборки:', error);
+        });
+    },
+    markRoomCleaned(reservationId, cleaningDate) {
+      axios.post(`https://volkhov-hotel.ru/cleaning`, {
+        reservation_id: reservationId,
+        date: cleaningDate
+      })
+        .then(response => {
+          console.log('Комната помечена убранной:', response.data);
+        })
+        .catch(error => {
+          console.error('Ошибка при пометке комнаты убранной:', error);
+        });
+    },
+    fetchAdminMessages() {
+      axios.get('https://volkhov-hotel.ru/cabinet/notices/', { params: { filter: 'admin' } })
+        .then(response => {
+          this.adminMessages = response.data;
+        })
+        .catch(error => {
+          console.error('Ошибка при получении сообщений для администраторов:', error);
+        });
+    },
+    fetchAdminChatDetails(chatId) {
+      axios.get(`https://volkhov-hotel.ru/cabinet/notices/${chatId}`)
+        .then(response => {
+          this.adminChatMessages = response.data;
+        })
+        .catch(error => {
+          console.error('Ошибка при получении переписки для администраторов:', error);
+        });
+    },
+    fetchRoomDetails(roomId) {
+      axios.get(`https://volkhov-hotel.ru/rooms/${roomId}`)
+        .then(response => {
+          this.editedRoom = response.data;
+        })
+        .catch(error => {
+          console.error('Ошибка при получении данных номера:', error);
+        });
+    },
+    saveEditedRoom() {
+      axios.post('https://volkhov-hotel.ru/rooms', this.editedRoom)
+        .then(response => {
+          console.log('Номер сохранен:', response.data);
+        })
+        .catch(error => {
+          console.error('Ошибка при сохранении номера:', error);
+        });
+    },
+    orderCleaning() {
+      axios.post('https://volkhov-hotel.ru/services', {
+        order: 'cleaning',
+        reservation_id: this.cleaningReservationId,
+        date: this.cleaningDate
+      })
+        .then(response => {
+          console.log('Заказ клининга:', response.data);
+        })
+        .catch(error => {
+          console.error('Ошибка при заказе клининга:', error);
+        });
+    }
+  },
+  mounted() {
+    // Вызываем функции получения данных при загрузке страницы
+    if (this.currentPage === 'profile') {
+      this.fetchUserProfile();
+    } else if (this.currentPage === 'chats') {
+      this.fetchUserChats();
+    } else if (this.currentPage === 'reservations') {
+      this.fetchUserReservations();
+    } else if (this.currentPage === 'adminMessages') {
+      this.fetchAdminMessages();
+    } else if (this.currentPage === 'adminChatDetails') {
+      this.fetchAdminChatDetails(this.currentChatId); // Замените на реальный ID чата
+    } else if (this.currentPage === 'editRoom') {
+      this.fetchRoomDetails(this.currentRoomId); // Замените на реальный ID номера
+    }
+  }
+});
+</script>
+</body>
+</html>
