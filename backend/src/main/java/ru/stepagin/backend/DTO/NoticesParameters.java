@@ -1,8 +1,12 @@
 package ru.stepagin.backend.DTO;
 
-import lombok.Data;
+import lombok.*;
 
-@Data
+
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 public class NoticesParameters {
     private String filter;
     private String username;

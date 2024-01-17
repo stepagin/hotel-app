@@ -1,8 +1,11 @@
 package ru.stepagin.backend.DTO;
 
-import lombok.Data;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 public class MessageContext {
     private Long senderId;
     private Long receiverId;
