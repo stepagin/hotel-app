@@ -18,7 +18,7 @@ public class PaymentController {
             // TODO: returns information about payment [and link for paying]
             return ResponseEntity.ok("");
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("");
+            return ResponseEntity.badRequest().body("Произошла ошибка во время выполнения запроса");
         }
     }
 

@@ -4,19 +4,16 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "account")
+@Table(name = "role")
 @Getter
 @Setter
 @ToString
 @RequiredArgsConstructor
-public class AccountEntity {
+public class RoleEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
-    private String login;
-    private String password;
-    @OneToOne
-    @JoinColumn(name = "owner_id")
-    private PersonEntity owner;
+    private String title;
+    private String description;
 }

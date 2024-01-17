@@ -24,7 +24,7 @@ public class SearchAppController {
             // TODO: firstly asks service for all rooms; filter format: dates(2), guestsAmount(int) and tags{}
             return ResponseEntity.ok("");
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("");
+            return ResponseEntity.badRequest().body("Произошла ошибка во время выполнения запроса");
         }
     }
 
@@ -34,9 +34,9 @@ public class SearchAppController {
                                       @RequestParam("adult_guests") Optional<String> adultGuests) {
         try {
             // TODO: returns room, if it exists; if the dates and guests are set, returns price
-            return ResponseEntity.ok("");
+            return ResponseEntity.ok(id);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("");
+            return ResponseEntity.badRequest().body("Произошла ошибка во время выполнения запроса");
         }
     }
 
@@ -46,7 +46,7 @@ public class SearchAppController {
             // TODO: firstly asks reservationService for reserve; requires dates and guests (ReservationData); redirect to paying
             return ResponseEntity.ok("");
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("");
+            return ResponseEntity.badRequest().body("Произошла ошибка во время выполнения запроса");
         }
     }
 
