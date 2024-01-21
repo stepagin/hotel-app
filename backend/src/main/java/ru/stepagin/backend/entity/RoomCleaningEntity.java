@@ -20,7 +20,7 @@ public class RoomCleaningEntity {
     @Column(name = "id")
     private Long id;
     @ManyToOne
-    @JoinColumn(name = "room_id")
+    @JoinColumn(name = "room_id", nullable = false)
     private RoomEntity room;
     @Column(name = "cleaning_date", columnDefinition = "DATE", nullable = false)
     private Date cleaningDate;

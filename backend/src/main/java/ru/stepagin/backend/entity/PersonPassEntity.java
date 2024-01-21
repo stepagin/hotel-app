@@ -27,9 +27,9 @@ public class PersonPassEntity {
     private PersonEntity person;
     @Column(name = "pass_data", nullable = false)
     private String passData;
-    @Column(name = "activation_date", nullable = false, columnDefinition = "DATETIME")
+    @Column(name = "activation_date", columnDefinition = "DATETIME", nullable = false)
     private LocalDateTime activationDate;
-    @Column(name = "deactivation_date", nullable = false, columnDefinition = "DATETIME")
+    @Column(name = "deactivation_date", columnDefinition = "DATETIME", nullable = false)
     private LocalDateTime deactivationDate;
     private String description;
 }
