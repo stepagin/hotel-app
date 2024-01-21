@@ -1,15 +1,18 @@
 package ru.stepagin.backend.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 @Entity
-@Table(name = "role")
+@Table(name = "tags")
 @Getter
 @Setter
 @ToString
 @RequiredArgsConstructor
-public class RoleEntity {
+public class TagEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
