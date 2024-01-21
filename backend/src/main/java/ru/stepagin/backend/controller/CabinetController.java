@@ -79,7 +79,7 @@ public class CabinetController {
     }
 
     @GetMapping("/payments/invoices/{id}")
-    public ResponseEntity getPaymentCheckById(/* undone */) {
+    public ResponseEntity getPaymentReceiptById(/* undone */) {
         try {
             // TODO: Uses JWT token. returns data about payment: reservation, amount and date
             return ResponseEntity.ok("");
