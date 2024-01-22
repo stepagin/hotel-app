@@ -23,17 +23,18 @@ public class ReservationEntity {
     @Column(name = "id")
     private Long id;
     @ManyToOne
-    @JoinColumn(name = "room_id")
+    @JoinColumn(name = "room_id", nullable = false)
     private RoomEntity room;
     @ManyToOne
-    @JoinColumn(name = "person_id")
+    @JoinColumn(name = "person_id", nullable = false)
     private PersonEntity person;
+    @Column(name = "payment_amount", nullable = false)
     private Long paymentAmount;
-    @Column(name = "from_date", columnDefinition = "DATE")
+    @Column(name = "from_date", columnDefinition = "DATE", nullable = false)
     private Date fromDate;
-    @Column(name = "to_date", columnDefinition = "DATE")
+    @Column(name = "to_date", columnDefinition = "DATE", nullable = false)
     private Date toDate;
-    @Column(name = "create_date")
+    @Column(name = "create_date", nullable = false)
     @CreationTimestamp
     private LocalDateTime createDate;
 }
