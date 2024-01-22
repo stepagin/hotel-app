@@ -5,9 +5,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.stepagin.backend.DTO.MessageContext;
 import ru.stepagin.backend.DTO.NoticesParameters;
+import ru.stepagin.backend.DTO.ReservationData;
 import ru.stepagin.backend.DTO.UserPersonalData;
+import ru.stepagin.backend.entity.ReservationEntity;
+import ru.stepagin.backend.service.ReservationService;
 import ru.stepagin.backend.service.UserService;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -16,6 +20,8 @@ import java.util.Optional;
 public class CabinetController {
     @Autowired
     private UserService userService;
+    @Autowired
+    private ReservationService reservationService;
 
     @GetMapping("/profile/{id}")
     public ResponseEntity getProfileInfo(@PathVariable Long id) {
@@ -67,7 +73,7 @@ public class CabinetController {
         }
     }
 
-    @GetMapping("/payments/history")
+    @PostMapping("/payments/history")
     public ResponseEntity getPaymentHistory(/* undone */) {
         try {
             // TODO: returns all payments (negative number) and refunds (positive number).
@@ -77,7 +83,7 @@ public class CabinetController {
         }
     }
 
-    @GetMapping("/payments/invoices/{id}")
+    @PostMapping("/payments/invoices/{id}")
     public ResponseEntity getPaymentReceiptById(/* undone */) {
         try {
             // TODO: Uses JWT token. returns data about payment: reservation, amount and date
@@ -87,11 +93,10 @@ public class CabinetController {
         }
     }
 
-    @GetMapping("/reservations")
-    public ResponseEntity getAllReservations(/* undone */) {
+    @PostMapping("/reservations")
+    public ResponseEntity getAllReservations(@RequestBody UserPersonalData data) {
         try {
-            // TODO: Optional gets filters. Returns list of reservations.
-            return ResponseEntity.ok("");
+            return ResponseEntity.ok(reservationService.getReservationsByLogin(data.getLogin()));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Произошла ошибка во время выполнения запроса");
         }

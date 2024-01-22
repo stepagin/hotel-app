@@ -38,4 +38,15 @@ public class UserService {
 
         return new UserPersonalData(passport, person, account);
     }
+
+    public PersonEntity getPersonByLogin(String login) {
+        AccountEntity account = accountRepo.findByLogin(login);
+        if (account == null)
+            return null;
+        return account.getOwner();
+    }
+
+    public AccountEntity getAccountByLogin(String login) {
+        return accountRepo.findByLogin(login);
+    }
 }
