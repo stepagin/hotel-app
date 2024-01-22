@@ -16,7 +16,7 @@ import java.util.List;
 public class SearchResultData {
     private List<RoomInfoInSearch> rooms;
 
-    public SearchResultData(ArrayList<RoomEntity> roomEntities) {
-
+    public SearchResultData(List<RoomInfoInSearch> rooms) {
+        this.rooms = rooms;
     }
 }
