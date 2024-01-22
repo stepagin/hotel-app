@@ -20,13 +20,9 @@ public class SearchAppController {
     @GetMapping("/search")
     public ResponseEntity searchRooms(@RequestParam("occupied") Optional<String> dates,
                                       @RequestParam("adult_guests") Optional<String> adultGuests,
-                                      @RequestParam("cheapest") Optional<String> cheapest,
-                                      @RequestParam("lux") Optional<String> lux,
-                                      @RequestParam("economy") Optional<String> economy,
                                       @RequestParam("price") Optional<String> price) {
         try {
-            // TODO: firstly asks service for all rooms; filter format: dates(2), guestsAmount(int) and tags{}
-            return ResponseEntity.ok(roomService.search(dates, adultGuests, cheapest, lux, economy, price));
+            return ResponseEntity.ok(roomService.search(dates, adultGuests, price));
         } catch (BadSearchInputException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
