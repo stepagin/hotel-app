@@ -2,13 +2,12 @@ package ru.stepagin.backend.controller;
 
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import ru.stepagin.backend.DTO.ReservationData;
 
 import java.util.Optional;
 
-@Controller
+@RestController
 @RequestMapping("/searchapp")
 @CrossOrigin
 public class SearchAppController {
