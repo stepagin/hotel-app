@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.ColumnTransformer;
 import org.hibernate.annotations.CreationTimestamp;
 import ru.stepagin.backend.enumerations.ReservationStatus;
 
@@ -27,6 +28,8 @@ public class ReservationStatusChangeEntity {
     @CreationTimestamp
     @Column(name = "date", columnDefinition = "DATETIME", nullable = false)
     private LocalDateTime date;
+    @Enumerated(EnumType.STRING)
+    @ColumnTransformer(write = "?::reservation_status")
     @Column(name = "status", columnDefinition = "reservation_status", nullable = false)
     private ReservationStatus status;
 }

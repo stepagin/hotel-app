@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.ColumnTransformer;
 import org.hibernate.annotations.CreationTimestamp;
 import ru.stepagin.backend.enumerations.PaymentStatus;
 import ru.stepagin.backend.enumerations.PaymentTarget;
@@ -27,11 +28,15 @@ public class PaymentEntity {
     @ManyToOne
     @JoinColumn(name = "reservation_id")
     private ReservationEntity reservation;
-    @CreationTimestamp
+    @Enumerated(EnumType.STRING)
+    @ColumnTransformer(write = "?::payment_status")
     @Column(name = "status", columnDefinition = "payment_status")
     private PaymentStatus status;
+    @CreationTimestamp
     @Column(name = "date")
     private LocalDateTime creationDate;
+    @Enumerated(EnumType.STRING)
+    @ColumnTransformer(write = "?::payment_target")
     @Column(name = "target", columnDefinition = "payment_target")
     private PaymentTarget target;
 }

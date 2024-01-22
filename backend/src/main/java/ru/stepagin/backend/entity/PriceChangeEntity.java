@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.ColumnTransformer;
 import ru.stepagin.backend.enumerations.PriceChangeMode;
 
 import java.time.LocalDate;
@@ -27,6 +28,8 @@ public class PriceChangeEntity {
     private LocalDate fromDate;
     @Column(name = "to_date", columnDefinition = "DATE", nullable = false)
     private LocalDate toDate;
+    @Enumerated(EnumType.STRING)
+    @ColumnTransformer(write = "?::price_change_mode")
     @Column(name = "mode", columnDefinition = "price_change_mode", nullable = false)
     private PriceChangeMode mode;
     @Column(name = "value", nullable = false)

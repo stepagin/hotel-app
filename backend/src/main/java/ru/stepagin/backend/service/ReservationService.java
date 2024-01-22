@@ -2,6 +2,7 @@ package ru.stepagin.backend.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 import ru.stepagin.backend.DTO.ReservationData;
 import ru.stepagin.backend.entity.AccountEntity;
 import ru.stepagin.backend.entity.PersonEntity;

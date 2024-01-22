@@ -46,6 +46,7 @@ public class SearchAppController {
     public ResponseEntity reserveRoom(@PathVariable Long id, @RequestParam ReservationData data) {
         try {
             // TODO: firstly asks reservationService for reserve; requires dates and guests (ReservationData); redirect to paying
+
             return ResponseEntity.ok("");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Произошла ошибка во время выполнения запроса");

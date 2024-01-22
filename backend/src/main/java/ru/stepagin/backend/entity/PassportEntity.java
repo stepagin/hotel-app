@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.ColumnTransformer;
 
 import java.time.LocalDate;
 import java.util.Date;
@@ -34,6 +35,8 @@ public class PassportEntity {
     private String authority;
     @Column(name = "date_of_birth", columnDefinition = "DATE")
     private LocalDate dateOfBirth;
+    @Enumerated(EnumType.STRING)
+    @ColumnTransformer(write = "?::gender")
     @Column(name = "gender", columnDefinition = "gender")
     private String gender;
 
