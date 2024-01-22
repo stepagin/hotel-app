@@ -5,13 +5,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.stepagin.backend.DTO.MessageContext;
 import ru.stepagin.backend.DTO.NoticesParameters;
-import ru.stepagin.backend.DTO.ReservationData;
+import ru.stepagin.backend.DTO.ReservationCancellingContext;
 import ru.stepagin.backend.DTO.UserPersonalData;
-import ru.stepagin.backend.entity.ReservationEntity;
 import ru.stepagin.backend.service.ReservationService;
 import ru.stepagin.backend.service.UserService;
 
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -97,6 +95,16 @@ public class CabinetController {
     public ResponseEntity getAllReservations(@RequestBody UserPersonalData data) {
         try {
             return ResponseEntity.ok(reservationService.getReservationsByLogin(data.getLogin()));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Произошла ошибка во время выполнения запроса");
+        }
+    }
+
+    @PostMapping("/reservations/cancel")
+    public ResponseEntity cancelReservation(@RequestBody ReservationCancellingContext data) {
+        try {
+            // check reservation haven't started
+            return ResponseEntity.ok(reservationService.cancelReservation(data.getLogin(), data.getReservationId()));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Произошла ошибка во время выполнения запроса");
         }
