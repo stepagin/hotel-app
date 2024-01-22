@@ -22,10 +22,8 @@ public class RoomService {
 
     public SearchResultData search(Optional<String> dates,
                                    Optional<String> adultGuests,
-                                   Optional<String> cheapest,
-                                   Optional<String> lux,
-                                   Optional<String> economy,
                                    Optional<String> price) throws BadSearchInputException {
+        // TODO: filter by reservations
         if (dates.isEmpty()) {
             throw new BadSearchInputException("Не указаны даты");
         }
@@ -83,5 +81,7 @@ public class RoomService {
                 .map(roomEntity -> this.createDtoFromRoomEntity(roomEntity, dateFrom, dateTo))
                 .collect(Collectors.toList()));
     }
+
+//    public getRoomDetailsById(Long )
 
 }
