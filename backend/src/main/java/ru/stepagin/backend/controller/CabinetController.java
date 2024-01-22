@@ -96,7 +96,8 @@ public class CabinetController {
     @PostMapping("/reservations")
     public ResponseEntity getAllReservations(@RequestBody UserPersonalData data) {
         try {
-            return ResponseEntity.ok(reservationService.getReservationsByLogin(data.getLogin()));
+            ReservationService reservations = reservations.getReservationsByLogin(data.getLogin());
+            return ResponseEntity.ok(reservations);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Произошла ошибка во время выполнения запроса");
         }
