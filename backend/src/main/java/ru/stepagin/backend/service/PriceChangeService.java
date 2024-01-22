@@ -25,7 +25,7 @@ public class PriceChangeService {
         LocalDate today = dateFrom;
         int basePrice = roomEntity.getBasePrice();
         int priceToday;
-        for (; !today.isEqual(dateTo); today.plusDays(1)) {
+        for (; !today.isEqual(dateTo); today=today.plusDays(1)) {
             priceToday = basePrice;
             for (PriceChangeEntity pce : changes) {
                 if (checkDateBetween(today, pce.getFromDate(), pce.getToDate())) {

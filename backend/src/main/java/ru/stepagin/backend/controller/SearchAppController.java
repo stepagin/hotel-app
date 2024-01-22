@@ -1,9 +1,12 @@
 package ru.stepagin.backend.controller;
 
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.stepagin.backend.DTO.ReservationData;
+import ru.stepagin.backend.exception.BadSearchInputException;
+import ru.stepagin.backend.service.RoomService;
 
 import java.util.Optional;
 
@@ -11,18 +14,17 @@ import java.util.Optional;
 @RequestMapping("/searchapp")
 @CrossOrigin
 public class SearchAppController {
+    @Autowired
+    private RoomService roomService;
 
     @GetMapping("/search")
     public ResponseEntity searchRooms(@RequestParam("occupied") Optional<String> dates,
                                       @RequestParam("adult_guests") Optional<String> adultGuests,
-                                      @RequestParam("cheapest") Optional<String> cheapest,
-                                      @RequestParam("lux") Optional<String> lux,
-                                      @RequestParam("economy") Optional<String> economy,
                                       @RequestParam("price") Optional<String> price) {
         try {
-            // TODO: firstly asks service for all rooms; filter format: dates(2), guestsAmount(int) and tags{}
-
-            return ResponseEntity.ok("");
+            return ResponseEntity.ok(roomService.search(dates, adultGuests, price));
+        } catch (BadSearchInputException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Произошла ошибка во время выполнения запроса");
         }
