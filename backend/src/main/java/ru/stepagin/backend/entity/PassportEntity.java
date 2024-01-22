@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Getter
@@ -32,7 +33,7 @@ public class PassportEntity {
     private String nationality;
     private String authority;
     @Column(name = "date_of_birth", columnDefinition = "DATE")
-    private Date dateOfBirth;
+    private LocalDate dateOfBirth;
     @Column(name = "gender", columnDefinition = "gender")
     private String gender;
 

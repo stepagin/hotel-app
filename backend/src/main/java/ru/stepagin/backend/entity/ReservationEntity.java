@@ -8,8 +8,8 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Entity
 @Table(name = "reservation")
@@ -31,9 +31,9 @@ public class ReservationEntity {
     @Column(name = "payment_amount", nullable = false)
     private Long paymentAmount;
     @Column(name = "from_date", columnDefinition = "DATE", nullable = false)
-    private Date fromDate;
+    private LocalDate fromDate;
     @Column(name = "to_date", columnDefinition = "DATE", nullable = false)
-    private Date toDate;
+    private LocalDate toDate;
     @Column(name = "create_date", nullable = false)
     @CreationTimestamp
     private LocalDateTime createDate;

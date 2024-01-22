@@ -22,6 +22,7 @@ public class SearchAppController {
                                       @RequestParam("price") Optional<String> price) {
         try {
             // TODO: firstly asks service for all rooms; filter format: dates(2), guestsAmount(int) and tags{}
+
             return ResponseEntity.ok("");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Произошла ошибка во время выполнения запроса");

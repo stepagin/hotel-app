@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "room_cleaning")
@@ -23,7 +23,7 @@ public class RoomCleaningEntity {
     @JoinColumn(name = "room_id", nullable = false)
     private RoomEntity room;
     @Column(name = "cleaning_date", columnDefinition = "DATE", nullable = false)
-    private Date cleaningDate;
+    private LocalDate cleaningDate;
     @Column(name = "cleaned", nullable = false)
     private boolean cleaned;
     @Column(name = "message", nullable = false)

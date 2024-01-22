@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "room")
@@ -27,7 +27,7 @@ public class RoomEntity {
     @Column(name = "base_price", nullable = false)
     private Integer basePrice;
     @Column(name = "active_from", columnDefinition = "DATE", nullable = false)
-    private Date activeFrom;
+    private LocalDate activeFrom;
     @Column(name = "active_till", columnDefinition = "DATE")
-    private Date activeTill;
+    private LocalDate activeTill;
 }

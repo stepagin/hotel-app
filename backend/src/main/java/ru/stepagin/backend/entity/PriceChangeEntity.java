@@ -7,7 +7,7 @@ import lombok.Setter;
 import lombok.ToString;
 import ru.stepagin.backend.enumerations.PriceChangeMode;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "price_change")
@@ -24,9 +24,9 @@ public class PriceChangeEntity {
     @JoinColumn(name = "room_id", nullable = false)
     private RoomEntity room;
     @Column(name = "from_date", columnDefinition = "DATE", nullable = false)
-    private Date fromDate;
+    private LocalDate fromDate;
     @Column(name = "to_date", columnDefinition = "DATE", nullable = false)
-    private Date toDate;
+    private LocalDate toDate;
     @Column(name = "mode", columnDefinition = "price_change_mode", nullable = false)
     private PriceChangeMode mode;
     @Column(name = "value", nullable = false)

@@ -1,11 +1,14 @@
 package ru.stepagin.backend.DTO;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import ru.stepagin.backend.entity.AccountEntity;
 import ru.stepagin.backend.entity.PassportEntity;
 import ru.stepagin.backend.entity.PersonEntity;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -17,7 +20,7 @@ public class UserPersonalData {
     private String lastName;
     private Long phoneNumber;
     private String gender;
-    private Date dateOfBirth;
+    private LocalDate dateOfBirth;
     private String login;
 
     public UserPersonalData(PassportEntity passport) {
